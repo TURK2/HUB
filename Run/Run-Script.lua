@@ -1,4 +1,4 @@
-local Games = loadstring(game:HttpGet("https://raw.github.com/TURK2/HUB/blob/main/Run/Check-Game.lua"))()
+local Games = loadstring(game:HttpGet("https://raw.githubusercontent.com/TURK2/HUB/main/Run/Check-Game.lua"))()
 
 for PlaceID, Execute in pairs(Games) do
     if PlaceID == game.PlaceId then
