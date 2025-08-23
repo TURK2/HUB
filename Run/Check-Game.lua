@@ -5,15 +5,3 @@ local GameScripts = {
     -- เพิ่มได้เรื่อยๆ
 }
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local PlaceId = game.PlaceId
-
--- ตรวจสอบว่ามี Script สำหรับเกมนี้ไหม
-if GameScripts[PlaceId] then
-    -- โหลด Script ถ้ามี
-    loadstring(game:HttpGet(GameScripts[PlaceId]))()
-else
-    -- ถ้าไม่เจอ → เตะผู้เล่นทันที พร้อมสองภาษา
-    LocalPlayer:Kick("เกมนี้ไม่รองรับ ❌\nThis game is not supported ❌")
-end
