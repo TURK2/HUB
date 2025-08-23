@@ -1,7 +1,5 @@
-
-local Games = {
-    [8003084678] = "https://raw.githubusercontent.com/TURK2/HUB/main/Run/Run-Script.lua",
-    [97777561575736] = "https://raw.githubusercontent.com/TURK2/HUB/refs/heads/main/Script-Game.lua/Kayak%20Racing", -- Kayak Racing
+-- เก็บ Game PlaceId + ลิ้ง script
+return {
+    [97777561575736] = "", -- เกมที่ 
+    -- เพิ่มเรื่อย ๆ ได้
 }
-
-return Games
