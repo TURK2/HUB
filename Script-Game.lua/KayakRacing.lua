@@ -133,3 +133,25 @@ spawn(function()
         end
     end
 end)
+-- SaveManager & InterfaceManager
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+-- โหลด config อัตโนมัติ
+SaveManager:LoadAutoloadConfig()
+
+-- เลือก Tab เริ่มต้น
+Window:SelectTab(1)
+
+-- ตัวอย่างแจ้งเตือนเปิดสคริปต์
+Fluent:Notify({
+    Title = "My Hub",
+    Content = "โหลดสคริปต์เสร็จแล้ว!",
+    Duration = 5
+})
