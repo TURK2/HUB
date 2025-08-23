@@ -4,4 +4,3 @@ return {
     [662417684] = "https://raw.githubusercontent.com/TURK2/HUB/main/Script-Game.lua/LuckyBlock", -- LuckyBlock 
     -- เพิ่มเรื่อย ๆ ได้   
 }
-https://raw.githubusercontent.com/TURK2/HUB/refs/heads/main/Script-Game.lua/LuckyBlock
