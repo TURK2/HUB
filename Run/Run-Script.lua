@@ -7,7 +7,3 @@ for PlaceID, Execute in pairs(Games) do
         loadstring(game:HttpGet(Execute))()
     end
 end
--- ถ้าไม่เจอ PlaceId ใน Check-Game ให้เตะออก
-if not found then
-    game.Players.LocalPlayer:Kick("Game not supported!")
-end
