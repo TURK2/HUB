@@ -1,115 +1,186 @@
--- โหลด Fluent UI
+-- โหลด Library Fluent
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 -- สร้างหน้าต่าง
 local Window = Fluent:CreateWindow({
-    Title = "Block Spawner " .. Fluent.Version,
-    SubTitle = "by You",
+    Title = "🚣‍♂️Kayak Racing " .. Fluent.Version,
+    SubTitle = "BY TURK X SCRIPTS",
     TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
+    Size = UDim2.fromOffset(500, 400),
     Acrylic = true,
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
+-- Services
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- RemoteEvent Reliable
+local Reliable = ReplicatedStorage:WaitForChild("Warp"):WaitForChild("Index"):WaitForChild("Event"):WaitForChild("Reliable")
+
+-- ตัวแปร Auto
+local AutoReliable = false
+local SpeedReliable = 1 -- หน่วยวินาที
+local Buffers = {
+    "\254\2\0\6\5Power\1\1",
+    "\254\2\0\6\5Power\1\2", 
+    "\254\2\0\6\5Power\1\3", 
+    "\254\2\0\6\5Power\1\4", 
+    "\254\2\0\6\5Power\1\5", 
+    "\254\2\0\6\5Power\1\6",
+    "\254\2\0\6\5Power\1\7",
+    "\254\2\0\6\5Power\1\8", 
+    "\254\2\0\6\5Power\1\9", 
+    "\254\2\0\6\5Power\1\10",
+    "\254\2\0\6\5Power\1\11", 
+    "\254\2\0\6\5Power\1\12",
+}
+
+local AutoWin = false
+local SpeedWarp = 1
+local CurrentStage = 1
+local MaxStage = 18
+local TargetPosition = Vector3.new(119.26, 5.63, -18.36)
+
 -- สร้างแท็บ
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Main = Window:AddTab({ Title = "Main", Icon = "package" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
--- Section
-local Section = Tabs.Main:AddSection("Spawn Blocks")
-
--- Multi Dropdown เลือก Block
-local BlockDropdown = Section:AddDropdown("BlockDropdown", {
-    Title = "เลือก Block (สูงสุด 3)",
-    Values = {"Lucky", "Super", "Diamond", "Rainbow", "Galaxy"},
-    Multi = true,
-    Default = {}
-})
-
--- ปุ่มกด Spawn
-Section:AddButton({
-    Title = "Spawn Selected Blocks",
-    Description = "กดเพื่อ Spawn Block ที่เลือก",
-    Callback = function()
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local selected = {}
-        for name, state in pairs(BlockDropdown.Value) do
-            if state then table.insert(selected, name) end
-        end
-
-        -- จำกัดไม่เกิน 3 Block
-        if #selected > 3 then
-            Fluent:Notify({
-                Title = "Error",
-                Content = "เลือกได้สูงสุด 3 Block เท่านั้น!",
-                Duration = 5
-            })
-            return
-        end
-
-        for _, block in ipairs(selected) do
-            if block == "Lucky" then
-                ReplicatedStorage.SpawnLuckyBlock:FireServer()
-            elseif block == "Super" then
-                ReplicatedStorage.SpawnSuperBlock:FireServer()
-            elseif block == "Diamond" then
-                ReplicatedStorage.SpawnDiamondBlock:FireServer()
-            elseif block == "Rainbow" then
-                ReplicatedStorage.SpawnRainbowBlock:FireServer()
-            elseif block == "Galaxy" then
-                ReplicatedStorage.SpawnGalaxyBlock:FireServer()
-            end
-        end
+-- ================================
+-- Main Tab Toggles
+-- ================================
+Tabs.Main:AddToggle("AutoReliable", {
+    Title = "AutoReliable",
+    Description = "เปิด/ปิด AutoReliable",
+    Default = false,
+    Callback = function(state)
+        AutoReliable = state
+        print("Auto Reliable:", state)
     end
 })
 
--- เลือกแท็บเริ่มต้น
-Window:SelectTab(1)
-
--- แจ้งเตือนโหลดเสร็จ
-Fluent:Notify({
-    Title = "Block Spawner Loaded",
-    Content = "เลือก Block ได้สูงสุด 3 ชิ้นแล้วกด Spawn",
-    Duration = 5
+Tabs.Main:AddToggle("AutoWin", {
+    Title = "AutoWin",
+    Description = "เปิด/ปิด Auto Win",
+    Default = false,
+    Callback = function(state)
+        AutoWin = state
+        print("Auto Win:", state)
+    end
 })
--- Addons:
--- SaveManager (อนุญาตให้คุณมีระบบบันทึกการตั้งค่า)
--- InterfaceManager (อนุญาตให้คุณมีระบบจัดการ Interface ของ UI)
 
--- ส่ง library ให้กับตัวจัดการ (Managers)
-SaveManager:SetLibrary(Fluent)       -- บอก SaveManager ให้ใช้งาน Fluent UI
-InterfaceManager:SetLibrary(Fluent)  -- บอก InterfaceManager ให้ใช้งาน Fluent UI
+-- ================================
+-- Settings Tab UI
+-- ================================
+local UISettings = Tabs.Settings:AddSection("UI Settings")
 
--- ข้ามการบันทึกคีย์ที่ใช้โดย ThemeManager
--- (เราไม่ต้องการให้ configs บันทึก Theme)
-SaveManager:IgnoreThemeSettings()
+UISettings:AddToggle("AcrylicToggle", {
+    Title = "เปิด/ปิด Blur (Acrylic)",
+    Default = true,
+    Callback = function(state)
+        Window:SetAcrylic(state)
+    end
+})
 
--- คุณสามารถเพิ่ม index ของ element ที่ SaveManager จะไม่บันทึกได้
-SaveManager:SetIgnoreIndexes({})
+-- ================================
+-- Loop AutoReliable
+-- ================================
+local AutoReliableCoroutine
+AutoReliableCoroutine = coroutine.create(function()
+    while true do
+        task.wait(SpeedReliable)
+        if Fluent.Unloaded then break end
+        if AutoReliable then
+            pcall(function()
+                for _, buf in ipairs(Buffers) do
+                    Reliable:FireServer(buf)
+                end
+            end)
+        end
+    end
+end)
+coroutine.resume(AutoReliableCoroutine)
 
--- ตัวอย่างการใช้งานแบบนี้:
--- script hub อาจมี theme อยู่ในโฟลเดอร์รวม
--- และ config ของเกมแต่ละเกมแยกเก็บในโฟลเดอร์เฉพาะ
-InterfaceManager:SetFolder("FluentScriptHub")           -- ตั้งโฟลเดอร์สำหรับ InterfaceManager
-SaveManager:SetFolder("FluentScriptHub/specific-game")   -- ตั้งโฟลเดอร์สำหรับ SaveManager
+-- ================================
+-- ฟังก์ชันวาป
+-- ================================
+local function WarpToSign(stageNum)
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hrp = character:WaitForChild("HumanoidRootPart", 5)
+    local trackFolder = Workspace:WaitForChild("Track", 5)
+    if hrp and trackFolder then
+        local stageName = "Stage" .. string.format("%02d", stageNum)
+        local stageFolder = trackFolder:FindFirstChild(stageName)
+        if stageFolder then
+            local sign = stageFolder:FindFirstChild("Sign")
+            if sign then
+                hrp.CFrame = sign.CFrame + Vector3.new(0,3,0)
+            end
+        end
+    end
+end
 
--- สร้าง Section ของ Interface และ Config ในแท็บ Settings
+local function WarpToPosition(pos)
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hrp = character:WaitForChild("HumanoidRootPart", 5)
+    if hrp then
+        hrp.CFrame = CFrame.new(pos)
+    end
+end
+
+-- ================================
+-- Loop AutoWin
+-- ================================
+local AutoWinCoroutine
+AutoWinCoroutine = coroutine.create(function()
+    while true do
+        task.wait(SpeedWarp)
+        if Fluent.Unloaded then break end
+        if AutoWin then
+            pcall(function()
+                local doorFolder = Workspace:FindFirstChild("WorldMain") and Workspace.WorldMain:FindFirstChild("Door")
+                local signStatus = doorFolder and doorFolder:FindFirstChild("SignStatus")
+                if signStatus then
+                    WarpToPosition(TargetPosition)
+                else
+                    WarpToSign(CurrentStage)
+                    CurrentStage = CurrentStage + 1
+                    if CurrentStage > MaxStage then
+                        CurrentStage = 1
+                    end
+                end
+            end)
+        end
+    end
+end)
+coroutine.resume(AutoWinCoroutine)
+
+-- ================================
+-- SaveManager & InterfaceManager
+-- ================================
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
--- เลือกแท็บเริ่มต้นเป็นแท็บแรก
+-- โหลด config อัตโนมัติ
+SaveManager:LoadAutoloadConfig()
+
+-- เลือก Tab เริ่มต้น
 Window:SelectTab(1)
 
--- แจ้งเตือนว่า script โหลดเสร็จ
+-- แจ้งเตือนโหลดสคริปต์เสร็จ
 Fluent:Notify({
-    Title = "Fluent",
-    Content = "The script has been loaded.", -- แปล: "สคริปต์โหลดเสร็จแล้ว"
-    Duration = 8
+    Title = "My Hub",
+    Content = "โหลดสคริปต์เสร็จแล้ว!",
+    Duration = 5
 })
-
--- คุณสามารถใช้ SaveManager:LoadAutoloadConfig() เพื่อโหลด config
--- ที่ถูกตั้งให้โหลดอัตโนมัติ
-SaveManager:LoadAutoloadConfig()
