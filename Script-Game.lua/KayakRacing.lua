@@ -14,13 +14,11 @@ local Window = Fluent:CreateWindow({
 
 -- สร้างแท็บ
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "package" }),
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
--- ================================
--- Main Tab (Block Spawner)
--- ================================
+-- Section
 local Section = Tabs.Main:AddSection("Spawn Blocks")
 
 -- Multi Dropdown เลือก Block
@@ -52,7 +50,6 @@ Section:AddButton({
             return
         end
 
-        -- Spawn Block ตามที่เลือก
         for _, block in ipairs(selected) do
             if block == "Lucky" then
                 ReplicatedStorage.SpawnLuckyBlock:FireServer()
@@ -66,39 +63,6 @@ Section:AddButton({
                 ReplicatedStorage.SpawnGalaxyBlock:FireServer()
             end
         end
-    end
-})
-
--- ================================
--- Settings Tab (UI Controls)
--- ================================
-local UISettings = Tabs.Settings:AddSection("UI Settings")
-
--- Toggle Acrylic Blur
-local AcrylicToggle = UISettings:AddToggle("AcrylicToggle", {
-    Title = "เปิด/ปิด Blur (Acrylic)",
-    Default = true
-})
-AcrylicToggle:OnChanged(function()
-    Window:SetAcrylic(AcrylicToggle.Value)
-end)
-
--- Dropdown เปลี่ยน Theme
-local ThemeDropdown = UISettings:AddDropdown("ThemeDropdown", {
-    Title = "Theme",
-    Values = {"Dark", "Light"},
-    Default = "Dark"
-})
-ThemeDropdown:OnChanged(function(Value)
-    Window:SetTheme(Value)
-end)
-
--- ปุ่มซ่อน/แสดง UI
-UISettings:AddButton({
-    Title = "Minimize UI",
-    Description = "ซ่อน/แสดง Fluent UI",
-    Callback = function()
-        Window:Minimize()
     end
 })
 
