@@ -3,8 +3,8 @@ local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/
 
 -- สร้างหน้าต่าง
 local Window = Fluent:CreateWindow({
-    Title = "🚣‍♂️Kayak Racing " .. Fluent.Version,
-    SubTitle = "BY TURK X SCRIPTS",
+    Title = "🚣‍♂️ Kayak Racing / การแข่งขันเรือคายัค " .. Fluent.Version,
+    SubTitle = "BY TURK X SCRIPTS / โดย TURK X SCRIPTS",
     TabWidth = 160,
     Size = UDim2.fromOffset(500, 400),
     Acrylic = true,
@@ -26,17 +26,17 @@ local AutoReliable = false
 local SpeedReliable = 1 -- หน่วยวินาที
 local Buffers = {
     "\254\2\0\6\5Power\1\1",
-    "\254\2\0\6\5Power\1\2", 
-    "\254\2\0\6\5Power\1\3", 
-    "\254\2\0\6\5Power\1\4", 
-    "\254\2\0\6\5Power\1\5", 
+    "\254\2\0\6\5Power\1\2",
+    "\254\2\0\6\5Power\1\3",
+    "\254\2\0\6\5Power\1\4",
+    "\254\2\0\6\5Power\1\5",
     "\254\2\0\6\5Power\1\6",
     "\254\2\0\6\5Power\1\7",
-    "\254\2\0\6\5Power\1\8", 
-    "\254\2\0\6\5Power\1\9", 
+    "\254\2\0\6\5Power\1\8",
+    "\254\2\0\6\5Power\1\9",
     "\254\2\0\6\5Power\1\10",
-    "\254\2\0\6\5Power\1\11", 
-    "\254\2\0\6\5Power\1\12",
+    "\254\2\0\6\5Power\1\11",
+    "\254\2\0\6\5Power\1\12"
 }
 
 local AutoWin = false
@@ -47,16 +47,16 @@ local TargetPosition = Vector3.new(119.26, 5.63, -18.36)
 
 -- สร้างแท็บ
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "package" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+    Main = Window:AddTab({ Title = "Main / เมนูหลัก", Icon = "package" }),
+    Settings = Window:AddTab({ Title = "Settings / ตั้งค่า", Icon = "settings" })
 }
 
 -- ================================
 -- Main Tab Toggles
 -- ================================
 Tabs.Main:AddToggle("AutoReliable", {
-    Title = "AutoReliable",
-    Description = "เปิด/ปิด AutoReliable",
+    Title = "AutoReliable / ออโต้เรียลายเบิล",
+    Description = "ON/OFF AutoReliable / เปิด/ปิด AutoReliable",
     Default = false,
     Callback = function(state)
         AutoReliable = state
@@ -65,8 +65,8 @@ Tabs.Main:AddToggle("AutoReliable", {
 })
 
 Tabs.Main:AddToggle("AutoWin", {
-    Title = "AutoWin",
-    Description = "เปิด/ปิด Auto Win",
+    Title = "AutoWin / ออโต้ชนะ",
+    Description = "ON/OFF Auto Win / เปิด/ปิด Auto Win",
     Default = false,
     Callback = function(state)
         AutoWin = state
@@ -77,10 +77,11 @@ Tabs.Main:AddToggle("AutoWin", {
 -- ================================
 -- Settings Tab UI
 -- ================================
-local UISettings = Tabs.Settings:AddSection("UI Settings")
+local UISettings = Tabs.Settings:AddSection("UI Settings / การตั้งค่า UI")
 
 UISettings:AddToggle("AcrylicToggle", {
-    Title = "เปิด/ปิด Blur (Acrylic)",
+    Title = "Blur (Acrylic) / เบลอ (Acrylic)",
+    Description = "ON/OFF Acrylic Blur / เปิด/ปิด Blur",
     Default = true,
     Callback = function(state)
         Window:SetAcrylic(state)
@@ -180,7 +181,7 @@ Window:SelectTab(1)
 
 -- แจ้งเตือนโหลดสคริปต์เสร็จ
 Fluent:Notify({
-    Title = "My Hub",
-    Content = "โหลดสคริปต์เสร็จแล้ว!",
+    Title = "My Hub / ฮับของฉัน",
+    Content = "Script loaded successfully! / โหลดสคริปต์เสร็จแล้ว!",
     Duration = 5
 })
