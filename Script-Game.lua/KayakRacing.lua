@@ -111,3 +111,41 @@ Fluent:Notify({
     Content = "เลือก Block ได้สูงสุด 3 ชิ้นแล้วกด Spawn",
     Duration = 5
 })
+-- Addons:
+-- SaveManager (อนุญาตให้คุณมีระบบบันทึกการตั้งค่า)
+-- InterfaceManager (อนุญาตให้คุณมีระบบจัดการ Interface ของ UI)
+
+-- ส่ง library ให้กับตัวจัดการ (Managers)
+SaveManager:SetLibrary(Fluent)       -- บอก SaveManager ให้ใช้งาน Fluent UI
+InterfaceManager:SetLibrary(Fluent)  -- บอก InterfaceManager ให้ใช้งาน Fluent UI
+
+-- ข้ามการบันทึกคีย์ที่ใช้โดย ThemeManager
+-- (เราไม่ต้องการให้ configs บันทึก Theme)
+SaveManager:IgnoreThemeSettings()
+
+-- คุณสามารถเพิ่ม index ของ element ที่ SaveManager จะไม่บันทึกได้
+SaveManager:SetIgnoreIndexes({})
+
+-- ตัวอย่างการใช้งานแบบนี้:
+-- script hub อาจมี theme อยู่ในโฟลเดอร์รวม
+-- และ config ของเกมแต่ละเกมแยกเก็บในโฟลเดอร์เฉพาะ
+InterfaceManager:SetFolder("FluentScriptHub")           -- ตั้งโฟลเดอร์สำหรับ InterfaceManager
+SaveManager:SetFolder("FluentScriptHub/specific-game")   -- ตั้งโฟลเดอร์สำหรับ SaveManager
+
+-- สร้าง Section ของ Interface และ Config ในแท็บ Settings
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+-- เลือกแท็บเริ่มต้นเป็นแท็บแรก
+Window:SelectTab(1)
+
+-- แจ้งเตือนว่า script โหลดเสร็จ
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.", -- แปล: "สคริปต์โหลดเสร็จแล้ว"
+    Duration = 8
+})
+
+-- คุณสามารถใช้ SaveManager:LoadAutoloadConfig() เพื่อโหลด config
+-- ที่ถูกตั้งให้โหลดอัตโนมัติ
+SaveManager:LoadAutoloadConfig()
