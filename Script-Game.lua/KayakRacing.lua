@@ -24,7 +24,7 @@ local Reliable = ReplicatedStorage:WaitForChild("Warp"):WaitForChild("Index"):Wa
 -- ตัวแปร Auto
 local AutoReliable = false
 local AutoWin = false
-local SpeedWarp = 0.1
+local SpeedWarp = 0.0
 local CurrentStage = 1
 local MaxStage = 18
 local TargetPosition = Vector3.new(119.26, 5.63, -18.36)
