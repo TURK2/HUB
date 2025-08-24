@@ -23,7 +23,13 @@ local Reliable = ReplicatedStorage:WaitForChild("Warp"):WaitForChild("Index"):Wa
 
 -- ตัวแปร Auto
 local AutoReliable = false
-local SpeedReliable = 1 -- หน่วยวินาที
+local AutoWin = false
+local SpeedWarp = 0.1
+local CurrentStage = 1
+local MaxStage = 18
+local TargetPosition = Vector3.new(119.26, 5.63, -18.36)
+
+-- Buffers สำหรับ AutoReliable
 local Buffers = {
     "\254\2\0\6\5Power\1\1",
     "\254\2\0\6\5Power\1\2",
@@ -38,12 +44,6 @@ local Buffers = {
     "\254\2\0\6\5Power\1\11",
     "\254\2\0\6\5Power\1\12"
 }
-
-local AutoWin = false
-local SpeedWarp = 1
-local CurrentStage = 1
-local MaxStage = 18
-local TargetPosition = Vector3.new(119.26, 5.63, -18.36)
 
 -- สร้างแท็บ
 local Tabs = {
@@ -89,25 +89,6 @@ UISettings:AddToggle("AcrylicToggle", {
 })
 
 -- ================================
--- Loop AutoReliable
--- ================================
-local AutoReliableCoroutine
-AutoReliableCoroutine = coroutine.create(function()
-    while true do
-        task.wait(SpeedReliable)
-        if Fluent.Unloaded then break end
-        if AutoReliable then
-            pcall(function()
-                for _, buf in ipairs(Buffers) do
-                    Reliable:FireServer(buf)
-                end
-            end)
-        end
-    end
-end)
-coroutine.resume(AutoReliableCoroutine)
-
--- ================================
 -- ฟังก์ชันวาป
 -- ================================
 local function WarpToSign(stageNum)
@@ -135,10 +116,29 @@ local function WarpToPosition(pos)
 end
 
 -- ================================
+-- Loop AutoReliable (FireServer แบบ Sigma Spy ล่าสุด)
+-- ================================
+coroutine.wrap(function()
+    while true do
+        task.wait(0.0) -- ส่งทุก 1 วินาที
+        if Fluent.Unloaded then break end
+        if AutoReliable then
+            for _, buf in ipairs(Buffers) do
+                pcall(function()
+                    Reliable:FireServer(
+                        buffer.fromstring("\27"),
+                        buffer.fromstring(buf)
+                    )
+                end)
+            end
+        end
+    end
+end)()
+
+-- ================================
 -- Loop AutoWin
 -- ================================
-local AutoWinCoroutine
-AutoWinCoroutine = coroutine.create(function()
+coroutine.wrap(function()
     while true do
         task.wait(SpeedWarp)
         if Fluent.Unloaded then break end
@@ -158,8 +158,7 @@ AutoWinCoroutine = coroutine.create(function()
             end)
         end
     end
-end)
-coroutine.resume(AutoWinCoroutine)
+end)()
 
 -- ================================
 -- SaveManager & InterfaceManager
