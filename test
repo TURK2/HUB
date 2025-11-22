@@ -1,153 +1,171 @@
--- โหลด Rayfield
-local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
-
--- ลิงก์ไฟล์คีย์แบบ RAW
-local KeyURL = "https://raw.githubusercontent.com/TURK2/HUB/main/key"
-
--- โหลดไฟล์คีย์จาก GitHub
-local RawKeys = game:HttpGet(KeyURL)
-
--- แปลงไฟล์คีย์เป็นตารางระดับ
-local KeyList = {}
-
-for line in string.gmatch(RawKeys, "[^\r\n]+") do
-    local Level, Key = string.match(line, "(.+):(.+)")
-    if Level and Key then
-        KeyList[Key] = Level  -- ["PRE-222"] = "พรีเมี่ยม"
-    end
+-- รอให้เกมโหลดก่อน
+if not game:IsLoaded() then
+    game.Loaded:Wait()
 end
 
--- สร้างหน้าต่างหลัก
+task.wait(2)
+
+-- โหลด Rayfield UI
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+
+-- ลิงก์ RAW ของคีย์บน GitHub (จะต้องมีคีย์เดียว)
+local KeyURL = "https://raw.githubusercontent.com/TURK2/HUB/main/key"
+
+-- สร้างหน้าต่างเมนู
 local Window = Rayfield:CreateWindow({
-    Name = "เมนูหลักของ HUB",
+    Name = "HUB ภาษาไทย",
     LoadingTitle = "กำลังโหลดระบบ...",
-    LoadingSubtitle = "ระบบคีย์หลายระดับ (ภาษาไทย)",
+    LoadingSubtitle = "เวอร์ชันภาษาไทยทั้งหมด",
 
     ConfigurationSaving = {
         Enabled = true,
-        FolderName = "HUB_ไทย",
-        FileName = "การตั้งค่า"
+        FolderName = "ThaiHUBSave",
+        FileName = "Settings"
     },
 
     KeySystem = true,
-
     KeySettings = {
         Title = "ระบบคีย์ภาษาไทย",
-        Subtitle = "กรุณาใส่รหัสผ่านให้ถูกต้อง",
-        Note = "รับรหัสได้ใน Discord หรือผ่านผู้ดูแล",
+        Subtitle = "กรุณาใส่รหัสเพื่อเข้าสู่ระบบ",
+        Note = "รหัสดูได้จาก GitHub เท่านั้น",
 
-        FileName = "เก็บคีย์",
+        FileName = "ThaiKeySave",
         SaveKey = false,
-        GrabKeyFromSite = false, -- ปิดอันเดิมของ Rayfield
-
-        Key = {"ใช้คีย์จากลิงก์ GitHub เท่านั้น!"} -- ใส่อะไรก็ได้
+        GrabKeyFromSite = true,          -- ใช้ระบบคีย์จากเว็บของ Rayfield
+        Key = {KeyURL}                   -- URL ที่ Rayfield จะดึงคีย์จากเว็บ
     }
 })
 
--- ดึงรหัสที่ผู้ใช้กรอก
-local UserKey = Rayfield.Flags.KeySystemKey.CurrentValue
+--------------------------------------------------------------------
+--------------------------- แท็บหลัก ------------------------------
+--------------------------------------------------------------------
 
--- ตรวจสอบระดับของผู้ใช้
-local UserLevel = KeyList[UserKey]
+local Main = Window:CreateTab("เมนูหลัก", 4483362458)
+local Section = Main:CreateSection("ระบบควบคุมหลัก")
 
-if UserLevel == nil then
-    Rayfield:Notify({
-        Title = "รหัสไม่ถูกต้อง",
-        Content = "กรุณาตรวจสอบรหัสอีกครั้ง",
-        Duration = 6,
-        Image = "info"
-    })
-else
-    Rayfield:Notify({
-        Title = "เข้าสู่ระบบสำเร็จ",
-        Content = "ระดับของคุณคือ: " .. UserLevel,
-        Duration = 6,
-        Image = "check"
-    })
-end
-
--- สร้างแท็บตามระดับ
-local Tab_Free     = Window:CreateTab("เมนูฟรี")
-local Tab_Premium  = Window:CreateTab("เมนูพรีเมี่ยม")
-local Tab_VIP      = Window:CreateTab("เมนูวีไอพี")
-local Tab_Admin    = Window:CreateTab("เมนูแอดมิน")
-local Tab_Owner    = Window:CreateTab("เมนูเจ้าของ")
-
--- ซ่อนทั้งหมดก่อน
-Tab_Free:SetVisibility(false)
-Tab_Premium:SetVisibility(false)
-Tab_VIP:SetVisibility(false)
-Tab_Admin:SetVisibility(false)
-Tab_Owner:SetVisibility(false)
-
--- เปิดแท็บตามระดับ
-if UserLevel == "ฟรี" then
-    Tab_Free:SetVisibility(true)
-end
-
-if UserLevel == "พรีเมี่ยม" then
-    Tab_Free:SetVisibility(true)
-    Tab_Premium:SetVisibility(true)
-end
-
-if UserLevel == "วีไอพี" then
-    Tab_Free:SetVisibility(true)
-    Tab_Premium:SetVisibility(true)
-    Tab_VIP:SetVisibility(true)
-end
-
-if UserLevel == "แอดมิน" then
-    Tab_Free:SetVisibility(true)
-    Tab_Premium:SetVisibility(true)
-    Tab_VIP:SetVisibility(true)
-    Tab_Admin:SetVisibility(true)
-end
-
-if UserLevel == "เจ้าของ" then
-    Tab_Free:SetVisibility(true)
-    Tab_Premium:SetVisibility(true)
-    Tab_VIP:SetVisibility(true)
-    Tab_Admin:SetVisibility(true)
-    Tab_Owner:SetVisibility(true)
-end
-
-
--- ตัวอย่างปุ่มในเมนูฟรี
-Tab_Free:CreateButton({
-    Name = "ฟังก์ชันพื้นฐาน",
+-- ปุ่มกด
+Main:CreateButton({
+    Name = "ปุ่มทดสอบ",
     Callback = function()
-        print("ใช้งานเมนูฟรี")
+        Rayfield:Notify({
+            Title = "สำเร็จ",
+            Content = "คุณกดปุ่มแล้ว!",
+            Duration = 4,
+            Image = "check"
+        })
     end
 })
 
--- ตัวอย่างปุ่มใน Premium
-Tab_Premium:CreateButton({
-    Name = "พรีเมี่ยมฟังก์ชัน",
-    Callback = function()
-        print("ใช้เมนูพรีเมี่ยม")
+-- Toggle เปิด/ปิด
+Main:CreateToggle({
+    Name = "เปิด / ปิด ฟังก์ชัน",
+    CurrentValue = false,
+    Flag = "ToggleTest",
+    Callback = function(value)
+        print("สวิตช์เปลี่ยนเป็น:", value)
     end
 })
 
--- ตัวอย่างเมนู VIP
-Tab_VIP:CreateButton({
-    Name = "ฟังก์ชันวีไอพีขั้นสูง",
-    Callback = function()
-        print("VIP Function")
+-- Slider
+Main:CreateSlider({
+    Name = "ปรับความเร็ว",
+    Range = {1, 100},
+    Increment = 1,
+    Suffix = " ระดับ",
+    CurrentValue = 50,
+    Flag = "SpeedSlider",
+    Callback = function(value)
+        print("ค่าความเร็ว:", value)
     end
 })
 
--- ตัวอย่างเมนู Admin
-Tab_Admin:CreateButton({
-    Name = "จัดการระบบ (Admin)",
-    Callback = function()
-        print("ADMIN MENU")
+-- กล่องพิมพ์ข้อความ
+Main:CreateInput({
+    Name = "กรอกข้อความ",
+    PlaceholderText = "พิมพ์ข้อความที่นี่...",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(text)
+        print("คุณพิมพ์ว่า:", text)
     end
 })
 
--- ตัวอย่างเมนู Owner
-Tab_Owner:CreateButton({
-    Name = "เมนูเจ้าของระบบ",
+-- Dropdown เลือกตัวเลือก
+Main:CreateDropdown({
+    Name = "เลือกโหมด",
+    Options = {"โหมด 1", "โหมด 2", "โหมด 3"},
+    CurrentOption = "โหมด 1",
+    Callback = function(option)
+        print("เลือกโหมด:", option)
+    end
+})
+
+-- Color Picker
+Main:CreateColorPicker({
+    Name = "เลือกสี",
+    Color = Color3.fromRGB(255, 0, 0),
+    Callback = function(color)
+        print("คุณเลือกสี:", color)
+    end
+})
+
+-- Keybind
+Main:CreateKeybind({
+    Name = "ปุ่มลัด",
+    CurrentKeybind = "K",
+    HoldToInteract = false,
     Callback = function()
-        print("OWNER POWER")
+        print("กดปุ่มลัดแล้ว")
+    end
+})
+
+-- แจ้งเตือนแบบปุ่ม
+Main:CreateButton({
+    Name = "แสดงข้อความแจ้งเตือน",
+    Callback = function()
+        Rayfield:Notify({
+            Title = "แจ้งเตือน",
+            Content = "นี่คือการแจ้งเตือนจาก HUB!",
+            Duration = 4,
+            Image = "info"
+        })
+    end
+})
+
+--------------------------------------------------------------------
+--------------------------- เมนูตั้งค่า ---------------------------
+--------------------------------------------------------------------
+
+local Settings = Window:CreateTab("ตั้งค่า", 4483362458)
+local Section2 = Settings:CreateSection("ระบบตั้งค่า")
+
+Settings:CreateButton({
+    Name = "บันทึกค่าระบบ",
+    Callback = function()
+        Rayfield:SaveConfiguration()
+        Rayfield:Notify({
+            Title = "บันทึกสำเร็จ",
+            Content = "บันทึกค่าของคุณแล้ว",
+            Duration = 4
+        })
+    end
+})
+
+Settings:CreateButton({
+    Name = "โหลดค่าที่บันทึก",
+    Callback = function()
+        Rayfield:LoadConfiguration()
+        Rayfield:Notify({
+            Title = "โหลดสำเร็จ",
+            Content = "โหลดค่าที่คุณเคยตั้งไว้แล้ว",
+            Duration = 4
+        })
+    end
+})
+
+-- ปิด UI
+Settings:CreateButton({
+    Name = "ปิดเมนูทั้งหมด",
+    Callback = function()
+        Rayfield:Destroy()
     end
 })
