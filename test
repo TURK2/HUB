@@ -27,7 +27,7 @@ local Window = Rayfield:CreateWindow({
     KeySettings = {
         Title = "ระบบคีย์ภาษาไทย",
         Subtitle = "กรุณาใส่รหัสเพื่อเข้าสู่ระบบ",
-        Note = "รหัสดูได้จาก GitHub เท่านั้น",
+        Note = "รหัสดูได้จาก Discord เท่านั้น",
 
         FileName = "ThaiKeySave",
         SaveKey = false,
@@ -168,4 +168,4 @@ Settings:CreateButton({
     Callback = function()
         Rayfield:Destroy()
     end
-})
+}) 
