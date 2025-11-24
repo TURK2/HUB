@@ -1,2 +1,168 @@
-admintk
-adminall
+-- โหลด Rayfield Library
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+
+-- 🔐 URL ของไฟล์ Key บน GitHub แบบ RAW
+local KeyURL = "https://raw.githubusercontent.com/TURK2/HUB/main/KEY"
+
+-- 🔐 ฟังก์ชันโหลดคีย์จาก GitHub (อ่านได้หลายบรรทัด)
+local function LoadKeysFromGitHub()
+    local s, data = pcall(function()
+        return game:HttpGet(KeyURL)
+    end)
+
+    if not s then
+        warn("โหลดคีย์ล้มเหลว: ", data)
+        return {"DEFAULTKEY"} -- กันล่ม
+    end
+
+    local keys = {}
+    for line in string.gmatch(data, "[^\r\n]+") do
+        table.insert(keys, line)
+    end
+
+    return keys
+end
+
+local KEY_LIST = LoadKeysFromGitHub()  -- โหลดคีย์จาก GitHub จริง
+
+-- สร้าง Window หลัก + ระบบคีย์
+local Window = Rayfield:CreateWindow({
+    Name = "TURKXSRCIPT HUB - ...",
+    Icon = 0,
+    LoadingTitle = "TURKXSRCIPT UI Hub",
+    LoadingSubtitle = "Powered by TURKHub",
+    Theme = "DarkBlue",
+
+    ToggleUIKeybind = "K",
+
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = "MyHub",
+        FileName = "MyConfig"
+    },
+
+    -----------------------------------------------------------------
+    -- 🔐 ระบบ Key System (เปิดใช้งาน)
+    -----------------------------------------------------------------
+    KeySystem = true,
+    KeySettings = {
+        Title = "🔐 Key System",
+        Subtitle = "เข้าสู่ระบบด้วยคีย์",
+        Note = "รับคีย์จาก GitHub เท่านั้น",
+        FileName = "MyKeyFile", -- ชื่อไฟล์ที่ใช้เก็บคีย์ของผู้ใช้
+
+        SaveKey = true,             -- จำคีย์ไว้
+        GrabKeyFromSite = true,     -- โหลดจากลิงก์เว็บ
+        Key = KEY_LIST              -- คีย์ที่โหลดมาจาก GitHub
+    }
+})
+
+---------------------------------------------------------------------
+-- 🌟 สร้างแท็บ (Tabs)
+---------------------------------------------------------------------
+
+local MainTab = Window:CreateTab("Main", "home")
+local PlayerTab = Window:CreateTab("Player", "user")
+local SettingTab = Window:CreateTab("Settings", "settings")
+
+---------------------------------------------------------------------
+-- 🌟 MAIN TAB
+---------------------------------------------------------------------
+
+local MainSection = MainTab:CreateSection("Main Functions")
+
+MainTab:CreateButton({
+    Name = "Click Me!",
+    Callback = function()
+        Rayfield:Notify({
+            Title = "Button Clicked!",
+            Content = "คุณกดปุ่มสำเร็จแล้ว",
+            Duration = 3,
+            Image = "check"
+        })
+    end,
+})
+
+local Toggle = MainTab:CreateToggle({
+    Name = "Auto Farm",
+    CurrentValue = false,
+    Flag = "AutoFarm",
+    Callback = function(Value)
+        print("AutoFarm = ", Value)
+    end,
+})
+
+local Slider = MainTab:CreateSlider({
+    Name = "WalkSpeed",
+    Range = {16, 200},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Flag = "WalkSpeed",
+    Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+    end,
+})
+
+---------------------------------------------------------------------
+-- 🌟 PLAYER TAB
+---------------------------------------------------------------------
+
+local PlayerSection = PlayerTab:CreateSection("Player Options")
+
+local Dropdown = PlayerTab:CreateDropdown({
+    Name = "Choose Team",
+    Options = {"Red", "Blue", "Green", "Yellow"},
+    CurrentOption = {"Red"},
+    MultipleOptions = false,
+    Flag = "TeamSelect",
+    Callback = function(Option)
+        print("เลือกทีม:", Option[1])
+    end,
+})
+
+local Input = PlayerTab:CreateInput({
+    Name = "Custom Message",
+    PlaceholderText = "พิมพ์ข้อความ...",
+    Flag = "CustomMsg",
+    Callback = function(Text)
+        print("ข้อความ:", Text)
+    end,
+})
+
+PlayerTab:CreateColorPicker({
+    Name = "UI Color",
+    Color = Color3.fromRGB(255, 255, 255),
+    Flag = "UIColor",
+    Callback = function(Value)
+        print("เลือกสี:", Value)
+    end,
+})
+
+---------------------------------------------------------------------
+-- 🌟 SETTINGS TAB
+---------------------------------------------------------------------
+
+local SettingSection = SettingTab:CreateSection("System Settings")
+
+SettingTab:CreateKeybind({
+    Name = "Toggle UI",
+    CurrentKeybind = "K",
+    HoldToInteract = false,
+    Flag = "UIBind",
+    Callback = function()
+        Rayfield:SetVisibility(not Rayfield:IsVisible())
+    end,
+})
+
+SettingTab:CreateButton({
+    Name = "Destroy UI",
+    Callback = function()
+        Rayfield:Destroy()
+    end,
+})
+
+---------------------------------------------------------------------
+-- โหลดค่า Config
+---------------------------------------------------------------------
+Rayfield:LoadConfiguration()
