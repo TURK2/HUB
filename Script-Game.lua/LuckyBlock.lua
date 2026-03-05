@@ -1,77 +1,70 @@
--- โหลด Fluent UI
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
--- สร้างหน้าต่าง
-local Window = Fluent:CreateWindow({
-    Title = "Block Spawner " .. Fluent.Version,
-    SubTitle = "by You",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
-    Acrylic = true,
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Window = Rayfield:CreateWindow({
+   Name = "LuckyBlock Hub",
+   LoadingTitle = "LuckyBlock Hub",
+   LoadingSubtitle = "YT: TURKXSRCIPT",
+   ConfigurationSaving = {
+      Enabled = false
+   }
 })
 
--- สร้างแท็บ
-local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
-}
+-- Main Tab
+local MainTab = Window:CreateTab("Main", 4483362458)
 
--- Section
-local Section = Tabs.Main:AddSection("Spawn Blocks")
-
--- Multi Dropdown เลือก Block
-local BlockDropdown = Section:AddDropdown("BlockDropdown", {
-    Title = "เลือก Block (สูงสุด 3)",
-    Values = {"Lucky", "Super", "Diamond", "Rainbow", "Galaxy"},
-    Multi = true,
-    Default = {}
+MainTab:CreateButton({
+   Name = "Spawn LuckyBlock",
+   Callback = function()
+      ReplicatedStorage.SpawnLuckyBlock:FireServer()
+   end,
 })
 
--- ปุ่มกด Spawn
-Section:AddButton({
-    Title = "Spawn Selected Blocks",
-    Description = "กดเพื่อ Spawn Block ที่เลือก",
-    Callback = function()
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local selected = {}
-        for name, state in pairs(BlockDropdown.Value) do
-            if state then table.insert(selected, name) end
-        end
-
-        -- จำกัดไม่เกิน 3 Block
-        if #selected > 3 then
-            Fluent:Notify({
-                Title = "Error",
-                Content = "เลือกได้สูงสุด 3 Block เท่านั้น!",
-                Duration = 5
-            })
-            return
-        end
-
-        for _, block in ipairs(selected) do
-            if block == "Lucky" then
-                ReplicatedStorage.SpawnLuckyBlock:FireServer()
-            elseif block == "Super" then
-                ReplicatedStorage.SpawnSuperBlock:FireServer()
-            elseif block == "Diamond" then
-                ReplicatedStorage.SpawnDiamondBlock:FireServer()
-            elseif block == "Rainbow" then
-                ReplicatedStorage.SpawnRainbowBlock:FireServer()
-            elseif block == "Galaxy" then
-                ReplicatedStorage.SpawnGalaxyBlock:FireServer()
-            end
-        end
-    end
+MainTab:CreateButton({
+   Name = "Spawn Super Block",
+   Callback = function()
+      ReplicatedStorage.SpawnSuperBlock:FireServer()
+   end,
 })
 
--- เลือกแท็บเริ่มต้น
-Window:SelectTab(1)
+MainTab:CreateButton({
+   Name = "Spawn Diamond Block",
+   Callback = function()
+      ReplicatedStorage.SpawnDiamondBlock:FireServer()
+   end,
+})
 
--- แจ้งเตือนโหลดเสร็จ
-Fluent:Notify({
-    Title = "Block Spawner Loaded",
-    Content = "เลือก Block ได้สูงสุด 3 ชิ้นแล้วกด Spawn",
-    Duration = 5
+MainTab:CreateButton({
+   Name = "Spawn Rainbow Block",
+   Callback = function()
+      ReplicatedStorage.SpawnRainbowBlock:FireServer()
+   end,
+})
+
+MainTab:CreateButton({
+   Name = "Spawn Galaxy Block",
+   Callback = function()
+      ReplicatedStorage.SpawnGalaxyBlock:FireServer()
+   end,
+})
+
+-- About Tab
+local AboutTab = Window:CreateTab("About", 4483362458)
+
+AboutTab:CreateParagraph({
+   Title = "Credits",
+   Content = "YouTube: TURKXSRCIPT"
+})
+
+AboutTab:CreateButton({
+   Name = "Copy Discord Link",
+   Callback = function()
+      setclipboard("https://discord.gg/yourlink")
+      Rayfield:Notify({
+         Title = "Copied!",
+         Content = "Discord link copied to clipboard",
+         Duration = 4,
+      })
+   end,
 })
