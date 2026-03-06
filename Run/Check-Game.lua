@@ -1,8 +1,17 @@
 return {
-    [97777561575736] = "https://raw.githubusercontent.com/TURK2/HUB/main/Script-Game.lua/KayakRacing.lua", -- KayakRacing
-    [662417684] = "https://raw.githubusercontent.com/TURK2/HUB/main/Script-Game.lua/LuckyBlock.lua", -- LuckyBlock
-    [83403180598996] = "https://raw.githubusercontent.com/TURK2/HUB/main/Script-Game.lua/limbtoInfinity.lua" -- ClimbtoInfinity!
-    -- เพิ่มได้เรื่อยๆ
+    {
+        Name = "Kayak Racing",
+        ID = 97777561575736,
+        Script = "https://raw.githubusercontent.com/TURK2/HUB/main/Script-Game.lua/KayakRacing.lua"
+    },
+    {
+        Name = "Lucky Block",
+        ID = 662417684,
+        Script = "https://raw.githubusercontent.com/TURK2/HUB/main/Script-Game.lua/LuckyBlock.lua"
+    },
+    {
+        Name = "Climb to Infinity",
+        ID = 83403180598996,
+        Script = "https://raw.githubusercontent.com/TURK2/HUB/main/Script-Game.lua/limbtoInfinity.lua"
+    }
 }
-
-
